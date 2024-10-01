@@ -57,7 +57,7 @@ resource "null_resource" "install_kubernetes" {
 }
 
 # Output para devolver la ruta del archivo de configuración de Kubernetes
-output "kube_config_path" {
-  description = "Ruta al archivo de configuración de Kubernetes (kubectl)."
-  value       = "$HOME/.kube/config"
-}
+#output "kube_config_path" {
+#  description = "Ruta al archivo de configuración de Kubernetes (kubectl)."
+#  value       = "$HOME/.kube/config"
+#}
