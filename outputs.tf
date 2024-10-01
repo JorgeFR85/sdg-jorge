@@ -1,10 +1,12 @@
-output "master_ip" {
-  description = "IP master kubernetes"
-  value       = var.master_ip
+# Output para obtener la configuración de Kubernetes
+output "kubeconfig" {
+  description = "Archivo de configuración de kubeconfig"
+  value       = module.kubernetes.kubeconfig
+  sensitive   = true
 }
 
-output "kubeconfig" {
-  description = "Config conexion cluster"
-  value       = "/etc/kubernetes/admin.conf"
-  sensitive   = true
+# Output para mostrar la IP del nodo master de Kubernetes
+output "master_ip" {
+  description = "IP del nodo master de Kubernetes"
+  value       = module.kubernetes.master_ip
 }

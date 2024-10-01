@@ -1,46 +1,29 @@
+# Recurso para ejecutar comandos de instalación de Kubernetes en la máquina
 resource "null_resource" "install_kubernetes" {
-  # Instalacion nodo maestro
+
+  # Usamos el provisioner local-exec para ejecutar comandos en la máquina local
   provisioner "local-exec" {
     command = <<EOT
-      # Dependencias
-      sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+      # Actualizamos el índice de los paquetes apt en el sistema.
+      sudo apt-get update
 
-      # Agregar la clave GPG de Kubernetes
-      curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+      # Instalamos las dependencias necesarias para Kubernetes.
+      sudo apt-get install -y apt-transport-https ca-certificates curl gnupg
 
-      # Repo de Kubernetes
-      echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+      # Creamos el directorio /etc/apt/keyrings si no existe.
+      sudo mkdir -p /etc/apt/keyrings
 
-      # Instalacion kubelet, kubectl y kubeadm
-      sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
+      # Descargamos la clave pública del repositorio de Kubernetes.
+      curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-      # Se arranca el cluster
-      sudo kubeadm init --apiserver-advertise-address=${var.master_ip} --pod-network-cidr=192.168.2.0/16
+      # Añadimos el repositorio de Kubernetes a /etc/apt/sources.list.d/kubernetes.list.
+      echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-      # Configurar usuario no root
-      mkdir -p $HOME/.kube
-      sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-      sudo chown $(id -u):$(id -g) $HOME/.kube/config
+      # Actualizamos nuevamente el índice de paquetes para incluir el nuevo repositorio.
+      sudo apt-get update
 
-      # Instalacion de calico
-      kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-    EOT
-  }
-
-  # Retardo hasta que nodo master este listo
-  provisioner "local-exec" {
-    command = "sleep 60"
-  }
-}
-
-# Desplegar nodos 
-resource "null_resource" "install_workers" {
-  count = length(var.worker_ips)
-
-  provisioner "local-exec" {
-    command = <<EOT
-      # Ejecutar el comando para unirse al nodo maestro
-      sudo kubeadm join ${var.master_ip}:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+      # Instalamos los componentes principales de Kubernetes: kubelet, kubeadm y kubectl.
+      sudo apt-get install -y kubelet kubeadm kubectl
     EOT
   }
 }

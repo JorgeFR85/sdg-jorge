@@ -1,9 +1,5 @@
+# Variable global para definir la IP del master de Kubernetes
 variable "master_ip" {
-  description = "IP nodes master kubernetes"
+  description = "La dirección IP del master de Kubernetes"
   type        = string
-}
-
-variable "worker_ips" {
-  description = "IP's nodos"
-  type        = list(string)
 }
