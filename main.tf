@@ -4,9 +4,9 @@ resource "null_resource" "install_kubernetes" {
       # Actualizar los repositorios e instalar dependencias
       sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
 
-      # Descargar la clave GPG y agregar el repositorio correcto para Debian bullseye
+      # Descargar la clave GPG y agregar el repositorio correcto para Debian
       sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-buster main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+      echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
       # Actualizar los repositorios e instalar kubeadm, kubelet y kubectl
       sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
