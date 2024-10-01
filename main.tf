@@ -29,8 +29,8 @@ resource "null_resource" "install_kubernetes" {
   }
 
   # El ciclo de vida del recurso está configurado para evitar su destrucción.
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+#  lifecycle {
+#    prevent_destroy = true
+#  }
+#}
 
