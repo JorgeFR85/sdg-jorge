@@ -1,36 +1,53 @@
-name: Terraform CI/CD
+name: Deploy Terraform
 
-# Ejecuta el flujo de trabajo en un push o pull request al branch principal
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch: # Permite ejecutar manualmente el workflow si es necesario
 
 jobs:
   terraform:
-    name: Run Terraform
+    name: Plan Terraform
     runs-on: ubuntu-latest
 
     steps:
-    # Config el repo y checkea el código
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    # Se arranca el terraform
-    - name: Terraform Init
-      run: terraform init
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.11
 
-    # Se realiza el plan
-    - name: Terraform Plan
-      run: terraform plan
+      - name: Terraform Init
+        run: terraform init
 
-    # Espera de aprobacion manual
-    - name: Wait for Approval Event
-      uses: peter-evans/repository-dispatch@v1
-      with:
-        token: ${{ secrets.PAT_TOKEN }} 
-        repository: JorgeFR85/sdg-jorge
-        event-type: wait-for-approval
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+  manual_approval:
+    name: Manual Approval
+    runs-on: ubuntu-latest
+    needs: terraform # Este paso depende del trabajo de terraform
+
+    steps:
+      - name: Esperar Aprobación Manual
+        uses: hmarr/auto-approve-action@v2 # Espera la aprobación manual
+
+  apply_terraform:
+    name: Apply Terraform
+    runs-on: ubuntu-latest
+    needs: manual_approval # Depende de la aprobación manual
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.11
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
