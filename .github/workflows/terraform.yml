@@ -1,55 +1,36 @@
-name: Deploy Terraform
+name: Terraform CI/CD
 
+# Ejecuta el flujo de trabajo en un push o pull request al branch principal
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # Permite ejecutar manualmente el workflow
+  pull_request:
+    branches:
+      - main
 
 jobs:
   terraform:
-    name: Plan Terraform
+    name: Run Terraform
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    # Config el repo y checkea el código
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.11
+    # Se arranca el terraform
+    - name: Terraform Init
+      run: terraform init
 
-      - name: Terraform Init
-        run: terraform init
+    # Se realiza el plan
+    - name: Terraform Plan
+      run: terraform plan
 
-      - name: Terraform Plan
-        run: terraform plan
-
-  manual_approval:
-    name: Aprobación Manual
-    runs-on: ubuntu-latest
-    needs: terraform
-
-    steps:
-      - name: Esperar aprobación manual
-        uses: peter-evans/repository-dispatch@v1
-        with:
-          event_type: wait-for-approval
-
-  apply_terraform:
-    name: Apply Terraform
-    runs-on: ubuntu-latest
-    needs: manual_approval
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.11
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+    # Espera de aprobacion manual
+    - name: Wait for Approval Event
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # Usa el token proporcionado automáticamente por GitHub
+        repository: JorgeFR85/sdg-jorge
+        event-type: wait-for-approval
