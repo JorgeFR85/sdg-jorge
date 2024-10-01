@@ -31,15 +31,3 @@ resource "null_resource" "install_kubernetes" {
   }
 }
 
-# Salida para la dirección IP del master de Kubernetes
-output "master_ip" {
-  description = "IP master kubernetes"
-  value       = var.master_ip
-}
-
-# Salida para el archivo de configuración kubeconfig
-output "kubeconfig" {
-  description = "Config de conexión al cluster Kubernetes"
-  value       = "/etc/kubernetes/admin.conf"
-  sensitive   = true
-}
