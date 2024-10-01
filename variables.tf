@@ -1,10 +1,7 @@
 # Variable global para definir la IP del master de Kubernetes
-variable "master_ip" {
-  description = "La dirección IP del master de Kubernetes"
-  type        = string
-}
-variable "worker_ips" {
-  description = "Direcciones IP de los workers"
-  type        = list(string)
-}
+# Puedes definir variables si es necesario. Por ejemplo:
+# variable "k8s_version" {
+#   type    = string
+#   default = "1.21"
+# }
 

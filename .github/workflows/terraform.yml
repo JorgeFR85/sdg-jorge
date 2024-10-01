@@ -1,10 +1,13 @@
-name: Deploy Terraform
+name: 'Terraform Kubernetes Deploy'
 
+# El flujo de trabajo se ejecutará cuando haya un push en la rama main
 on:
   push:
     branches:
       - main
   workflow_dispatch:  # Permite iniciar manualmente el workflow si es necesario
+
+# Definimos el trabajo principal llamado "terraform"
 
 jobs:
   terraform:
@@ -12,19 +15,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Paso 1: Clonar el repositorio
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      # Paso 2: Configurar Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.11
 
+      # Paso 3: Inicializar Terraform
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
+      
+        # Paso 4: Aplicar los cambios de Terraform
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
