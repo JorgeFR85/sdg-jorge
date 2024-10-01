@@ -1,6 +1,3 @@
-# Proveedor de Terraform para ejecutar comandos locales
-provider "null" {}
-
 # Recurso para instalar Kubernetes en la máquina usando el provisioner local-exec
 resource "null_resource" "install_kubernetes" {
   provisioner "local-exec" {
