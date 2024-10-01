@@ -32,5 +32,4 @@ resource "null_resource" "install_kubernetes" {
 #  lifecycle {
 #    prevent_destroy = true
 #  }
-#}
-
+}
