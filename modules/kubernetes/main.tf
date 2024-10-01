@@ -40,11 +40,6 @@ resource "null_resource" "install_kubernetes" {
   }
 }
 
-# Salida que muestra la IP del nodo maestro de Kubernetes
-output "master_ip" {
-  description = "La IP del nodo maestro del clúster"
-  value       = "192.168.2.25"
-}
 
 # Salida que muestra el archivo de configuración de kubeconfig
 output "kubeconfig" {
