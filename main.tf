@@ -34,11 +34,3 @@ resource "null_resource" "install_kubernetes" {
   }
 }
 
-# Añadimos salidas para obtener información útil como la IP del master y el kubeconfig.
-output "master_ip" {
-  value = "192.168.2.26" # Cambia a la IP del nodo master si es necesario.
-}
-
-output "kubeconfig" {
-  value = "/etc/kubernetes/admin.conf" # Ruta del kubeconfig, si es necesario.
-}
