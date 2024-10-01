@@ -3,7 +3,7 @@ provider "local" {}
 
 # Llamamos al módulo de Kubernetes para instalarlo
 module "kubernetes" {
-  source = "/modules/kubernetes"
+  source = "./modules/kubernetes"
 }
 
 # Output para mostrar la configuración del clúster
