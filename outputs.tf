@@ -1,4 +1,4 @@
-output "nycmaster_ip" {
+output "master_ip" {
   description = "IP master kubernetes"
   value       = var.master_ip
 }
