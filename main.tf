@@ -1,14 +1,12 @@
-provider "local" {}
-
 resource "null_resource" "install_kubernetes" {
   provisioner "local-exec" {
     command = <<EOT
       # Actualizar los repositorios e instalar dependencias
       sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl
 
-      # Descargar la clave GPG y agregar el repositorio correcto para Debian
+      # Descargar la clave GPG y agregar el repositorio correcto para Debian bullseye
       sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-$(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+      echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-bullseye main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
       # Actualizar los repositorios e instalar kubeadm, kubelet y kubectl
       sudo apt-get update && sudo apt-get install -y kubelet kubeadm kubectl
@@ -17,7 +15,7 @@ resource "null_resource" "install_kubernetes" {
       sudo apt-mark hold kubelet kubeadm kubectl
 
       # Inicializar el clúster de Kubernetes con kubeadm
-      sudo kubeadm init --apiserver-advertise-address=${var.master_ip} --pod-network-cidr=192.168.0.0/16
+      sudo kubeadm init --apiserver-advertise-address=192.168.2.26 --pod-network-cidr=192.168.0.0/16
 
       # Configurar kubectl para el usuario actual
       mkdir -p $HOME/.kube
@@ -29,8 +27,7 @@ resource "null_resource" "install_kubernetes" {
     EOT
   }
 
-  # Esperar que Kubernetes esté listo
-  provisioner "local-exec" {
-    command = "sleep 60"
+  triggers = {
+    always_run = "${timestamp()}"
   }
 }
