@@ -31,6 +31,6 @@ jobs:
     - name: Wait for Approval Event
       uses: peter-evans/repository-dispatch@v1
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # Usa el token proporcionado automáticamente por GitHub
+        token: ${{ secrets.PAT_TOKEN }} 
         repository: JorgeFR85/sdg-jorge
         event-type: wait-for-approval
